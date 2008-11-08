@@ -1,4 +1,4 @@
-def median list
+def median_partition list
 	target_order_stat = (list.size.to_f / 2 ).ceil
 	while true do
 		min,max = list.min, list.max
@@ -20,3 +20,14 @@ def median list
     end
   end
 end
+
+def median_simple list
+	target_order_stat = (list.size.to_f / 2 ).ceil
+	list.sort[target_order_stat-1]
+end
+
+def median list
+#	median_simple list
+	median_partition list
+end
+
