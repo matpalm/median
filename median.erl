@@ -1,11 +1,11 @@
--module(part).
--export([median_from_file/1,median/1]).
+-module(median).
+-export([from_file/1,from_list/1]).
 %-compile(export_all).
 
-median_from_file(File) ->
-    io:format("~w\n",[median(parse_file:parse(File))]).
+from_file(File) ->
+    io:format("~w\n",[from_list(parse_file:parse(File))]).
 
-median(List) ->
+from_list(List) ->
     nth_order_stat(round(length(List)/2), List).
 
 nth_order_stat(Target_order_stat, List) ->
