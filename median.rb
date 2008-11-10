@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 def median_partition list
 	target_order_stat = (list.size.to_f / 2 ).ceil
 	while true do
@@ -30,4 +32,7 @@ def median list
 #	median_simple list
 	median_partition list
 end
+
+values = STDIN.readlines.map { |m| m.strip.to_i }
+puts median(values)
 
