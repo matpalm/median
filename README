@@ -1,20 +1,30 @@
 work in progress code snippets for coming soon median finding experiment
 see http://matpalm.com/median
 
-bash> ./generate_test_data.rb 1 40 100 1000 > numbers.all
-bash> cat numbers.all | ./spread_across_files.rb numbers 4
+-----------------
 generate a list of (approx) 1000 numbers whose min is 1, max is 100 and median is 40
 spread this across 4 files; numbers.0, numbers.1, numbers.2, numbers.3
 
-bash> cat numbers.[0-3] | ./median.rb
+bash> ./generate_test_data.rb 1 40 100 1000 > numbers.all
+bash> cat numbers.all | ./spread_across_files.rb numbers 4
+
+-----------------
 run ruby version
 
-bash> erl -noshell -s median from_file numbers.all -s init stop 
+bash> cat numbers.[0-3] | ./median.rb
+
+-----------------
 run erlang single process version
 
-bash> erl -noshell -s controller init worker numbers.[0-3] -s init stop
+bash> erl -noshell -s median from_file numbers.all -s init stop 
+
+-----------------
 run erlang multiple process version (all processes on local machine) using full list impl
 
-bash> erl -noshell -s controller init worker_freq numbers.[0-3] -s init stop
+bash> erl -noshell -s controller init worker numbers.[0-3] -s init stop
+
+-----------------
 run erlang multiple process version (all processes on local machine) usnig list freq impl
+
+bash> erl -noshell -s controller init worker_freq numbers.[0-3] -s init stop
 
