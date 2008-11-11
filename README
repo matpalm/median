@@ -12,7 +12,9 @@ run ruby version
 bash> erl -noshell -s median from_file numbers.all -s init stop 
 run erlang single process version
 
-bash> erl -noshell -s controller init numbers.[0-3] -s init stop
-run erlang multiple process version (all processes on local machine)
+bash> erl -noshell -s controller init worker numbers.[0-3] -s init stop
+run erlang multiple process version (all processes on local machine) using full list impl
 
+bash> erl -noshell -s controller init worker_freq numbers.[0-3] -s init stop
+run erlang multiple process version (all processes on local machine) usnig list freq impl
 

@@ -2,22 +2,22 @@
 -export([init/1]).
 %-compile(export_all).
 
-init(Files) ->
-    put(workers, spawn_workers(Files)),
-    NumberElements = lists:sum(workers_request(length)),
-    M = median(NumberElements),
+init([Worker_impl|Files]) ->
+    put(workers, spawn_workers(Worker_impl,Files)),
+    Number_elements = lists:sum(workers_request(length)),
+    M = median(Number_elements),
     io:format("~w\n",[M]),
     M.
 
-spawn_workers(Files) ->
+spawn_workers(Worker_impl,Files) ->
     register(controller, self()),
     lists:map(	      
-      fun(File) -> spawn(worker,init,[File]) end,
+      fun(File) -> spawn(Worker_impl,init,[File]) end,
       Files
      ).
 
-median(NumberElements) ->
-    nth_order_stat(round(NumberElements/2)).
+median(Number_elements) ->
+    nth_order_stat(round(Number_elements/2)).
 
 nth_order_stat(Target_order_stat) ->
     prune_workers_without_data(),
