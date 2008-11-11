@@ -61,8 +61,8 @@ loop({Freqs, Keys}=State) ->
 	    fail_dog
 
     
-%    after 1500 ->
-	%    io:format("~w timeout\n",[self()])
+    after 1500 ->
+	    io:format("~w timeout\n",[self()])
 
     end.
 
