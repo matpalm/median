@@ -11,7 +11,7 @@ bash> cat numbers.all | ./spread_across_files.rb numbers 4
 -----------------
 run ruby version
 
-bash> cat numbers.[0-3] | ./median.rb
+bash> cat numbers.all | ./median.rb
 
 -----------------
 run erlang single process version

@@ -25,6 +25,11 @@ def generate min, median, max, number, seed=nil
 
 	total = num_less_than + num_greater_than + total_eq
 
+	# we want to spread the medians evenly through the set though so 
+  # need to keep a guard against emitting a median too often
+	min_num_between_medians = total / total_eq
+	last_median = 0
+
 	while(total > 0) do
 		case rand(3)
 			when 0 
@@ -38,14 +43,15 @@ def generate min, median, max, number, seed=nil
 					num_greater_than -= 1
 				end
 			when 2
-				if total_eq > 0
+				if total_eq > 0 and last_median > min_num_between_medians
 					puts median
 					total_eq -= 1
+					last_median = 0
 				end
 		end
 	
 		total = num_less_than + num_greater_than + total_eq
-
+		last_median	+= 1
 	end
 
 end
@@ -53,6 +59,5 @@ end
 raise "generate_test_data.rb min median max number_elements (seed)" unless ARGV.length==5 || ARGV.length==4
 ARGV.map! { |arg| arg.to_f.to_i } # to_f to allow 1e6 notation
 min, median, max, number,  seed = ARGV
-require 'generate_test_data.rb'
 generate min, median, max, number, seed
 
