@@ -1,30 +1,30 @@
 -module(parse_file).
--export([parse/1, parse_to_dict/1]).
+-export([to_list/1, to_dict/1]).
 
-parse(Filename) ->
+to_list(Filename) ->
     {ok,File} = file:open(Filename,read),
-    parse(File, [], next_line(File)).
+    to_list(File, [], next_line(File)).
 
-parse(File,Numbers,eof) -> 
+to_list(File,Numbers,eof) -> 
     file:close(File),
     lists:reverse(Numbers);
 
-parse(File,Numbers,Line) ->
+to_list(File,Numbers,Line) ->
     Value = line_to_int(Line),
-    parse(File, [Value|Numbers], next_line(File)).
+    to_list(File, [Value|Numbers], next_line(File)).
 
 
-parse_to_dict(Filename) ->
+to_dict(Filename) ->
     {ok,File} = file:open(Filename,read),
-    parse_to_dict(File, dict:new(), next_line(File)).
+    to_dict(File, dict:new(), next_line(File)).
 
-parse_to_dict(File,Freqs,eof) ->
+to_dict(File,Freqs,eof) ->
     file:close(File),
     Freqs;
 
-parse_to_dict(File,Freqs,Line) ->
+to_dict(File,Freqs,Line) ->
     Value = line_to_int(Line),
-    parse_to_dict(File, dict:update_counter(Value,1,Freqs), next_line(File)).
+    to_dict(File, dict:update_counter(Value,1,Freqs), next_line(File)).
 
     
 line_to_int(Line) ->

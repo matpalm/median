@@ -3,7 +3,7 @@
 %-compile(export_all).
 
 init(File) ->
-    List = parse_file:parse(File),
+    List = parse_file:to_list(File),
     loop(List).
 
 loop(List) ->
