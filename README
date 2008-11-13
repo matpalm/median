@@ -26,5 +26,5 @@ bash> erl -noshell -run controller init worker numbers.[0-3]
 -----------------
 run erlang multiple process version (all processes on local machine) using list freq impl
 
-bash> erl -noshell -run spread main numbers.all numbers.dict 4
+bash> erl -noshell -run generate_binary_dicts main numbers.all numbers.dict 4
 bash> erl -noshell -run controller init worker_freq numbers.dict.[1-4]

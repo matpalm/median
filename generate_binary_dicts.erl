@@ -1,5 +1,5 @@
 -module(generate_binary_dicts).
--export([main/1]).
+-export([main/1,writer/1]).
 
 main([InFile,OutFilePrefix,OutFileNum]) ->
     register(controller, self()),
@@ -17,7 +17,7 @@ spawn_writers(_O,0,Writers) ->
     Writers;
 
 spawn_writers(Output,Num,Writers) ->
-    OutputFile = Output ++ "." ++ integer_to_list(Num),
+    OutputFile = Output ++ "." ++ integer_to_list(Num-1),
     Writer = spawn(?MODULE,writer,[OutputFile]),
     spawn_writers(Output,Num-1,[Writer|Writers]).
 
