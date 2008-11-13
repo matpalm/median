@@ -11,20 +11,20 @@ bash> cat numbers.all | ./spread_across_files.rb numbers 4
 -----------------
 run ruby version
 
-bash> cat numbers.all | ./median.rb
+bash> ./median.rb < numbers.all
 
 -----------------
 run erlang single process version
 
-bash> erl -noshell -s median from_file numbers.all -s init stop 
+bash> erl -noshell -run median from_file numbers.all
 
 -----------------
 run erlang multiple process version (all processes on local machine) using full list impl
 
-bash> erl -noshell -s controller init worker numbers.[0-3] -s init stop
+bash> erl -noshell -run controller init worker numbers.[0-3]
 
 -----------------
 run erlang multiple process version (all processes on local machine) usnig list freq impl
-
-bash> erl -noshell -s controller init worker_freq numbers.[0-3] -s init stop
+bash> erl -noshell -run spread main numbers.all numbers.dict 4
+bash> erl -noshell -run controller init worker_freq numbers.dict.[1-4]
 

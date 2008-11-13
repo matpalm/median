@@ -3,7 +3,7 @@
 %-compile(export_all).
 
 init(File) ->
-    Freqs = parse_file:to_dict(File),
+    Freqs = parse_file:to_dict_from_binary(File),
     loop({Freqs, dict:fetch_keys(Freqs)}).
 
 loop({Freqs, Keys}=State) ->

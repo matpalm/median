@@ -3,11 +3,11 @@
 %-compile(export_all).
 
 init([Worker_impl|Files]) ->
-    put(workers, spawn_workers(Worker_impl,Files)),
+    put(workers, spawn_workers(list_to_atom(Worker_impl),Files)),
     Number_elements = lists:sum(workers_request(length)),
     M = median(Number_elements),
     io:format("~w\n",[M]),
-    M.
+    init:stop().
 
 spawn_workers(Worker_impl,Files) ->
     register(controller, self()),

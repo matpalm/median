@@ -3,7 +3,8 @@
 %-compile(export_all).
 
 from_file(File) ->
-    io:format("~w\n",[from_list(parse_file:to_list(File))]).
+    io:format("~w\n",[from_list(parse_file:to_list(File))]),
+    init:stop().
 
 from_list(List) ->
     nth_order_stat(round(length(List)/2), List).
