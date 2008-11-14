@@ -1,5 +1,5 @@
 -module(parse_file).
--export([to_list/1, to_dict/1, to_dict_from_binary/1, to_dict_b/1]).
+-export([to_list/1, to_dict/1, to_dict_from_binary/1, to_dict_b/1, test/1]).
 
 to_list(Filename) ->
     {ok,File} = file:open(Filename,read),
@@ -14,6 +14,11 @@ to_list(File,Numbers,Line) ->
     to_list(File, [Value|Numbers], next_line(File)).
 
 
+to_dict_from_binary(Filename) ->
+    {ok,B} = file:read_file(Filename),
+    binary_to_term(B).
+        
+    
 to_dict(Filename) ->
     {ok,File} = file:open(Filename,read),
     to_dict(File, dict:new(), next_line(File)).
@@ -26,19 +31,13 @@ to_dict(File,Freqs,Line) ->
     Value = line_to_int(Line),
     to_dict(File, dict:update_counter(Value,1,Freqs), next_line(File)).
 
-
-to_dict_from_binary(Filename) ->
-    {ok,B} = file:read_file(Filename),
-    binary_to_term(B).
-        
+next_line(File) ->
+    io:get_line(File,'').
     
 line_to_int(Line) ->
     Line_without_cr = lists:sublist(Line, length(Line)-1),
     list_to_integer(Line_without_cr).
 
-next_line(File) ->
-    io:get_line(File,'').
-    
 to_dict_b(InFilename) ->
     {ok,B} = file:read_file(InFilename),
     to_dict_b(InFilename,B,dict:new()).
@@ -63,3 +62,15 @@ next_line_b(<<"\n",Rest/binary>>, Collected) ->
 
 next_line_b(<<C:1/binary,Rest/binary>>, Collected) ->
     next_line_b(Rest, [C|Collected]). 
+
+
+
+% time testing
+
+test([Call,File]) ->
+    Start = now(),
+    apply(?MODULE, list_to_atom(Call), [File]),
+    Seconds = timer:now_diff(now(),Start) / 1000 / 1000,
+    io:format("~s time ~w sec\n",[Call, Seconds]),
+    init:stop().
+
