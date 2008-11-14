@@ -1,5 +1,5 @@
 -module(parse_file).
--export([to_list/1, to_dict/1, to_dict_from_binary/1]).
+-export([to_list/1, to_dict/1, to_dict_from_binary/1, to_dict_b/1]).
 
 to_list(Filename) ->
     {ok,File} = file:open(Filename,read),
@@ -39,3 +39,27 @@ line_to_int(Line) ->
 next_line(File) ->
     io:get_line(File,'').
     
+to_dict_b(InFilename) ->
+    {ok,B} = file:read_file(InFilename),
+    to_dict_b(InFilename,B,dict:new()).
+
+to_dict_b(_InFilename, <<>>, Dict) ->
+    Dict;
+    
+to_dict_b(InFilename, Binary, Dict) ->
+    { ReducedBinary, Line } = next_line_b(Binary),
+    Int = list_to_integer(Line),
+    NewDict = dict:update_counter(Int,1,Dict),
+    to_dict_b(InFilename, ReducedBinary, NewDict).
+
+next_line_b(Binary) ->
+    next_line_b(Binary, []).
+
+next_line_b(<<>>, _Collected) ->
+    ignore_last_line_if_didnt_end_in_newline;
+
+next_line_b(<<"\n",Rest/binary>>, Collected) ->  
+    { Rest, binary_to_list(list_to_binary(lists:reverse(Collected))) }; % black magic voodoo line
+
+next_line_b(<<C:1/binary,Rest/binary>>, Collected) ->
+    next_line_b(Rest, [C|Collected]). 
