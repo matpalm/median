@@ -21,10 +21,10 @@ bash> erl -noshell -run median from_file numbers.all
 -----------------
 run erlang multiple process version (all processes on local machine) using full list impl
 
-bash> erl -noshell -run controller init worker numbers.[0-3]
+bash> erl -noshell -sname bob -run controller init worker numbers.[0-3]
 
 -----------------
 run erlang multiple process version (all processes on local machine) using list freq impl
 
 bash> erl -noshell -run generate_binary_dicts main numbers.all numbers.dict 4
-bash> erl -noshell -run controller init worker_freq numbers.dict.[0-3]
+bash> erl -noshell -sname bob -run controller init worker_freq numbers.dict.[0-3]
