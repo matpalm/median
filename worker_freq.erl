@@ -1,39 +1,40 @@
 -module(worker_freq).
--export([init/1]).
+-export([init/2]).
 %-compile(export_all).
 
-init(File) ->
+init(Controller, File) ->
+    put(controller,Controller), 
     Freqs = parse_file:to_dict_from_binary(File),
     loop({Freqs, dict:fetch_keys(Freqs)}).
 
 loop({Freqs, Keys}=State) ->
-%    io:format("~w entering loop with freqs:~w keys:~w\n",[self(),dict:to_list(Freqs),Keys]),
+    Controller = get(controller),
     receive
 	{ request, length } ->
-	    controller ! { length, sum_values(Freqs) },
+	    Controller ! { length, sum_values(Freqs) },
 	    loop(State);
 
 	{request, have_data} ->
 	    case dict:size(Freqs) == 0 of
 		true ->
-		    controller ! dead,
+		    Controller ! dead,
 		    no_more_data;
 		false ->
-		    controller ! { alive, self() },
+		    Controller ! { alive, self() },
 		    loop(State)
 	    end;
 
 	{ request, min_max } ->
-	    controller ! { min_max, { lists:min(Keys), lists:max(Keys) } },
+	    Controller ! { min_max, { lists:min(Keys), lists:max(Keys) } },
 	    loop(State);
 
 	{ request, pivot } ->
-	    controller ! { pivot, hd(Keys) },
+	    Controller ! { pivot, hd(Keys) },
 	    loop(State);
 
 	{ request, {less_than,N} = LtMsg } ->
 	    Num_less_than = number_less_than(Freqs, N),
-	    controller ! { LtMsg, Num_less_than },
+	    Controller ! { LtMsg, Num_less_than },
 	    loop(State);
 
 	rotate ->

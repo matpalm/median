@@ -1,39 +1,40 @@
 -module(worker).
--export([init/1]).
+-export([init/2]).
 %-compile(export_all).
 
-init(File) ->
+init(Controller,File) ->
+    put(controller, Controller),
     List = parse_file:to_list(File),
     loop(List).
 
 loop(List) ->
-%    io:format("~w entering loop with ~w\n",[self(),List]),
+    Controller = get(controller),
     receive
 	{ request, length } ->
-	    controller ! { length, length(List) },
+	    Controller ! { length, length(List) },
 	    loop(List);
 
 	{request, have_data} ->
 	    case length(List) == 0 of
 		true ->
-		    controller ! dead,
+		    Controller ! dead,
 		    no_more_data;
 		false ->
-		    controller ! { alive, self() },
+		    Controller ! { alive, self() },
 		    loop(List)
 	    end;
 
 	{ request, min_max } ->
-	    controller ! { min_max, { lists:min(List), lists:max(List) } },
+	    Controller ! { min_max, { lists:min(List), lists:max(List) } },
 	    loop(List);
 
 	{ request, pivot } ->
-	    controller ! { pivot, hd(List) },
+	    Controller ! { pivot, hd(List) },
 	    loop(List);
 
 	{ request, {less_than,N} = LtMsg } ->
 	    Num_less_than = number_less_than(List, N),
-	    controller ! { LtMsg, Num_less_than },
+	    Controller ! { LtMsg, Num_less_than },
 	    loop(List);
 
 	rotate ->

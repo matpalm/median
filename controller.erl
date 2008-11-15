@@ -3,18 +3,26 @@
 %-compile(export_all).
 
 init([Worker_impl|Files]) ->
-    put(workers, spawn_workers(list_to_atom(Worker_impl),Files)),
+    put(workers, spawn_workers(net_adm:world(),list_to_atom(Worker_impl),Files)),
     Number_elements = lists:sum(workers_request(length)),
     M = median(Number_elements),
     io:format("~w\n",[M]),
     init:stop().
 
-spawn_workers(Worker_impl,Files) ->
-    register(controller, self()),
-    lists:map(	      
-      fun(File) -> spawn(Worker_impl,init,[File]) end,
-      Files
-     ).
+spawn_workers(Nodes, Worker_Impl, Files) ->
+    spawn_workers(Nodes, Worker_Impl, Files, []).
+
+spawn_workers([], Worker_impl, Files, Workers) ->
+    spawn_workers(net_adm:world(), Worker_impl, Files, Workers);
+
+spawn_workers(_Nodes, _Worker_impl, [], Workers) ->
+    Workers;
+
+spawn_workers([Node|OtherNodes],Worker_impl,[File|OtherFiles], Workers) ->
+    ControllerPid = self(),
+    io:format("spawn worker for ~p on ~p\n",[File,Node]),
+    New_worker = spawn(Node, Worker_impl, init, [ControllerPid,File]),
+    spawn_workers(OtherNodes, Worker_impl, OtherFiles, [New_worker|Workers]).
 
 median(Number_elements) ->
     nth_order_stat(round(Number_elements/2)).
@@ -113,7 +121,7 @@ workers_request(Type) ->
     lists:map(
       fun(_) -> 
 	      receive
-		  { Type, N } -> 
+		  { _Type, N } ->
 		      N
 	      after 60000 ->
 		      io:format("missed a response\n")
