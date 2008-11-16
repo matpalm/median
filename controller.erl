@@ -113,28 +113,19 @@ max(A,B) ->
 	    
 workers_request(Type) ->
     % request 
-    lists:map(
-      fun(P) -> P ! { request, Type } end,
-      get(workers)
-     ),
+    [ P ! { request, Type } || P <- get(workers) ],
     % receive responses
-    lists:map(
-      fun(_) -> 
-	      receive
-		  { _Type, N } ->
-		      N
-	      after 60000 ->
-		      io:format("missed a response\n")
-	      end
-	end,
-      get(workers)
-     ).
+    [ receive
+	  { _Type, N } ->
+	      N
+      after 60000 ->
+	      io:format("missed a response\n")
+      end 
+      || _P <- get(workers)
+    ].
 
 broadcast_to_workers(Msg) ->
-    lists:map(
-      fun(P) -> P ! Msg end,
-      get(workers)  
-     ).	    
+    [ P ! Msg || P <- get(workers)].
     
 
 			 

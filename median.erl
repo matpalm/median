@@ -38,13 +38,13 @@ partition_on_pivot(Target_order_stat, List) ->
 	    nth_order_stat(Target_order_stat, rotate(List));
 
 	Pivot_order_stat < Target_order_stat ->
-	    Lt = lists:filter(fun(E) -> E >= Pivot end, List),
+	    Lt = [ X || X <- List, X >=Pivot ],
 	    Rotated = rotate(Lt),
 	    Adjusted_target_order_stat = Target_order_stat - Num_less_than, 
 	    nth_order_stat(Adjusted_target_order_stat, Rotated);
 
 	true -> % Pivot_order_stat > Target_order_stat
-	    Gt = lists:filter(Lt_pivot_predicate, List),
+	    Gt = [ X || X <- List, X < Pivot ],
 	    nth_order_stat(Target_order_stat, Gt)
     end.   
 

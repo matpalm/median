@@ -41,10 +41,10 @@ loop(List) ->
 	    loop(rotate(List));
 
 	{ filter_gt_eq, N } ->
-	    loop(lists:filter(fun(E) -> E >= N end, List));
+	    loop([X || X <- List, X >= N]);
 
 	{ filter_lt, N } ->
-	    loop(lists:filter(fun(E) -> E < N end, List));
+	    loop([X || X <- List, X < N]);
 
 	shutdown ->
 	    shutdown;
