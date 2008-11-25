@@ -2,22 +2,20 @@
 -export([to_list/1, to_dict/1, to_dict_from_binary/1, to_dict_b/1, test/1]).
 
 to_list(Filename) ->
-    {ok,File} = file:open(Filename,read),
-    to_list(File, [], next_line(File)).
+    {ok,B} = file:read_file(Filename),
+    to_list(B, []).
 
-to_list(File,Numbers,eof) -> 
-    file:close(File),
-    lists:reverse(Numbers);
+to_list(<<>>, List) -> 
+    lists:reverse(List);
 
-to_list(File,Numbers,Line) ->
-    Value = line_to_int(Line),
-    to_list(File, [Value|Numbers], next_line(File)).
-
+to_list(Binary, List) ->
+    { ReducedBinary, Line } = next_line_b(Binary),
+    Int = list_to_integer(Line),
+    to_list(ReducedBinary, [Int|List]). 
 
 to_dict_from_binary(Filename) ->
     {ok,B} = file:read_file(Filename),
-    binary_to_term(B).
-        
+    binary_to_term(B).    
     
 to_dict(Filename) ->
     {ok,File} = file:open(Filename,read),
