@@ -10,6 +10,10 @@ init(Controller,File) ->
 loop(List) ->
     Controller = get(controller),
     receive
+	print_debug_info ->
+	    io:format("~w #elems=~w min=~w max=~w elems=~w \n",[self(),length(List),lists:min(List),lists:max(List),List]),
+	    loop(List);
+
 	{ request, length } ->
 	    Controller ! { length, length(List) },
 	    loop(List);
@@ -52,10 +56,6 @@ loop(List) ->
 	Msg ->
 	    io:format("~w received unexpected Msg ~w\n",[self(),Msg]),
 	    fail_dog
-
-    
-    after 1500 ->
-	    io:format("~w timeout\n",[self()])
 
     end.
 
