@@ -1,6 +1,7 @@
 finding the median of a trillion numbers
 http://matpalm.com/median
-
+see above page for walkthrough, basic instructions follow
+ 
 -----------------
 generate a list of (approx) 1000 numbers whose min is 1, max is 100 and median is 40
 spread this across 4 files; numbers.0, numbers.1, numbers.2, numbers.3
